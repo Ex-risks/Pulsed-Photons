@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Partial Info.plist. GENERATE_INFOPLIST_FILE stays on, so everything Xcode
+	  derives from build settings - name, version, category, copyright - is
+	  merged into this at build time. Only the things that cannot be expressed
+	  as an INFOPLIST_KEY build setting live here, which is anything array-shaped.
+	-->
+
+	<!--
+	  What the application will open. Without this, double-clicking a scan in
+	  Finder does nothing and the app never appears under "Open With" - which,
+	  for a viewer whose entire job is reading these four formats, reads as
+	  unfinished.
+	-->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Point Cloud</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.asprs.las</string>
+				<string>org.stanford.ply</string>
+				<string>com.pulsedphotons.xyz</string>
+			</array>
+		</dict>
+		<dict>
+			<!--
+			  Plain text is claimed only as an Alternate handler. XYZ data is
+			  routinely saved as .txt, but a point cloud viewer has no business
+			  becoming the default application for every text file on the disk.
+			-->
+			<key>CFBundleTypeName</key>
+			<string>Text Point Cloud</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+		</dict>
+	</array>
+
+	<!--
+	  Imported rather than exported: none of these formats are ours. LAS belongs
+	  to the ASPRS and PLY to Stanford; we are declaring types the system does
+	  not already know, not claiming to own them.
+	-->
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.asprs.las</string>
+			<key>UTTypeDescription</key>
+			<string>LASer Point Cloud</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>las</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.stanford.ply</string>
+			<key>UTTypeDescription</key>
+			<string>Polygon File Format</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ply</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.pulsedphotons.xyz</string>
+			<key>UTTypeDescription</key>
+			<string>XYZ Point Cloud</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>xyz</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
