@@ -217,7 +217,7 @@ The project contains roughly 6,700 lines of Swift and Metal.
 
 ## Background
 
-Pulsed Photons began as research code I developed during PhD in **Architectural Computation at the University of Edinburgh** in a thesis entitled  [*Ex-risk architecture: anticipating existential catastrophes through design*](https://era.ed.ac.uk/items/95ff0ab9-a324-45b6-ae39-4a4fb7239bea), where I used architecture to understand the spatial logic of extinction: how compound climate-related events reorganise human and more-than-human ecologies in a catastrophic manner. 
+Pulsed Photons began as research code I developed during PhD in **Architectural Computation at the University of Edinburgh** in a thesis entitled  [Ex-risk Architecture: anticipating existential catastrophes through design (2017-2021)](https://era.ed.ac.uk/items/95ff0ab9-a324-45b6-ae39-4a4fb7239bea), where I used architecture to understand the spatial logic of extinction: how compound climate-related events reorganise human and more-than-human ecologies in a catastrophic manner. 
 
 Large-scale point-cloud datasets were central to that work. I wrote custom code to visualise measured environments volumetrically, often section and reorient them, and use them as architectural evidence in an autographic register. The software existed as research infrastructure for specific investigations. Pulsed Photons formalises that code into a standalone tool for reading, sectioning, aligning, and exporting large point clouds without first passing through a larger data modelling environment.
 
