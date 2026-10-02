@@ -1,219 +1,258 @@
 # Pulsed Photons
 
-A macOS point cloud viewer for measured light.
+A macOS viewer for measured light.
 
-Reads light detection and ranging and photogrammetry scans, parsed through them fast,cut and square
-and frame them, and hands data in whatever format the next tool needs.
-Built on Metal, in Swift.
+Light detection and ranging records space through measured returns forming point clouds. Pulsed Photons renders large volumetric point-cloud datasets in real time for interactive inspection, sectioning, alignment, combination, and export.
 
-**macOS 14+ · Apple silicon and Intel · \~50M points on 18GB**
+Built in Swift and Metal.
+
+**macOS 14+ · Apple silicon and Intel · ~50M points on an 18GB Mac**
 
 ---
 
-## What it does
+## Features
 
-**Reads** `.las` · `.ply` · `.xyz` · `.txt`
-**Writes** `.ply` · `.xyz` · `.las` · `.png` · `.jpeg`
+**Reads:** `.las` · `.ply` · `.xyz` · `.txt`  
+**Writes:** `.las` · `.ply` · `.xyz` · `.png` · `.jpeg`
 
-- **Four data channels** — solid, height, intensity, RGB. A channel the file
-  does not contain is shown faint rather than hidden, so you can see what the
-  data is missing.
-- **X-ray** — accumulates every point along a ray instead of drawing the
-  nearest, so structure emerges from density. Works over any channel.
-- **Section** — a horizontal band cut through the cloud, thickness scrubbed,
-  height set by panning. Combined with a top view and orthographic projection,
-  this is a plan drawing.
-- **Ground grid** — world-fixed, to scale, with the spacing chosen so roughly
-  ten cells span the view at any zoom.
-- **Level** — finds the ground plane by RANSAC and rotates the scan flat.
-- **Turn** — a small gizmo for squaring a building to the grid by hand.
-- **Select and delete** — marquee selection over the full cloud, with restore.
-- **Multiple files** — open several scans into one scene; each is re-based onto
-  the first file's origin so georeferenced data lines up.
-- **Progressive refinement** — the view stays responsive while moving and fills
-  in to the full cloud once still, a slice per frame, with no stall.
+- **Data channels**  
+  View the cloud as solid colour, height, intensity or RGB. Channels missing from the source remain visible but disabled, so you can see what the file contains.
+
+- **X-ray**  
+  Accumulates points through the depth of the cloud rather than showing only the nearest surface. Density and internal structure become visible.
+
+- **Sections**  
+  Cut a horizontal band through the cloud and scrub its thickness and height. Combine it with a top orthographic view for a measured plan section.
+
+- **Ground grid**  
+  A world-fixed grid that stays to scale and adjusts its spacing as you zoom.
+
+- **Level**  
+  Finds the ground plane with RANSAC and rotates the scan level.
+
+- **Turn**  
+  Square buildings, rooms and other geometry to the grid by hand.
+
+- **Select and delete**  
+  Marquee-select points from the full cloud, remove them and restore the original data when needed.
+
+- **Multiple files**  
+  Open several scans in one scene. Georeferenced files are rebased to a common origin so they remain aligned.
+
+- **Progressive refinement**  
+  Keeps the view responsive while the camera moves, then progressively resolves the complete cloud once the view is still.
 
 ---
 
 ## Requirements
 
-|          |                    |
-| -------- | ------------------ |
-| macOS    | 14.0 or later      |
-| Xcode    | 15 or later        |
-| Swift    | 5                  |
-| Hardware | any Mac with Metal |
+| | |
+|---|---|
+| macOS | 14.0 or later |
+| Hardware | Any Mac with Metal |
+| Xcode | 15 or later, for building from source |
+| Swift | 5 |
 
 ---
 
-## Build and run
+## Build
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/Ex-risks/Pulsed-Photons.git
 cd Pulsed-Photons
+```
+
+Build and launch:
+
+```bash
 ./run.sh
 ```
 
-`run.sh` builds and launches in one step, and prints the binary's timestamp so
-you can always tell whether you are looking at a fresh build. Pass `release` for
-an optimised build:
+For an optimised build:
 
 ```bash
 ./run.sh release
 ```
 
-Or open `PulsedPhotonsPro.xcodeproj` and press ⌘R.
+Or open `PulsedPhotonsPro.xcodeproj` in Xcode and press `⌘R`.
+
+If you only want to use the application, download the latest ready-made build from **Releases**.
 
 ---
 
-## Using it
+## Usage
 
-Drop a file on the window, or ⌘O.
+Drop a supported file onto the window, or press `⌘O`.
 
-### The bar
+### Toolbar
 
-One line, five categories of four:
+The main controls sit in a single bar:
 
-```
+```text
 FILE.LAS (5.9M)   SOLID HEIGHT INTENSITY RGB   SIZE POINTS XRAY SECTION
       TOP FRONT SIDE ISO   LEVEL TURN SELECT RESTORE   FIT GRID SUMI EXPORT
 ```
 
-Each numeral is **scrubbable** — drag it to change the value, double-click to
-type an exact one, ⌥-click to reset it. `POINTS` accepts `2M` and `500k`.
+Numeric controls are scrub-enabled:
+
+- drag to change
+- double-click to enter an exact value
+- Option-click to reset
+
+`POINTS` also accepts values such as `2M` and `500k`.
 
 ### Navigation
 
-| Gesture        | Does                |
-| -------------- | ------------------- |
-| drag           | orbit               |
-| ⌥ drag         | pan                 |
-| ⇧ drag         | zoom                |
-| ⌘ drag         | rotate the model    |
-| scroll / pinch | zoom                |
-| double-click   | fit to bounds       |
-| ⌃ drag         | selection rectangle |
+| Gesture | Action |
+|---|---|
+| drag | orbit |
+| `⌥` drag | pan |
+| `⇧` drag | zoom |
+| `⌘` drag | rotate model |
+| scroll / pinch | zoom |
+| double-click | fit to bounds |
+| `⌃` drag | select |
 
-### Keys
+### Keyboard
 
-|         |                   |           |                          |
-| ------- | ----------------- | --------- | ------------------------ |
-| `1`–`4` | data channel      | `⌘1`–`⌘4` | top / front / side / iso |
-| `F`     | fit to bounds     | `G`       | ground grid              |
-| `L`     | level to ground   | `T`       | turn handles             |
-| `S`     | selection mode    | `⌫`       | delete selected          |
-| `esc`   | clear selection   | `⌘E`      | export                   |
-| `⌘O`    | open              | `⇧⌘O`     | add to scene             |
-| `⇧⌘W`   | close point cloud |           |                          |
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `1`–`4` | data channel | `⌘1`–`⌘4` | top / front / side / iso |
+| `F` | fit to bounds | `G` | grid |
+| `L` | level | `T` | turn |
+| `S` | selection mode | `⌫` | delete selection |
+| `Esc` | clear selection | `⌘E` | export |
+| `⌘O` | open | `⇧⌘O` | add file |
+| `⇧⌘W` | close point cloud | | |
 
 ### Units
 
-LAS files can store their unit in the coordinate system record, but many do not. PLY and XYZ files never do, so the app has to assume one. Assumed units appear in parentheses, for example `(metres)`. Click the unit to set the correct one. The app then uses that unit everywhere, including the scale bar, grid, and section thickness.
+LAS files can declare their linear unit in the coordinate-system record, but many do not. PLY and XYZ files do not store units.
+
+When the unit is unknown, Pulsed Photons assumes one and shows it in parentheses, for example `(metres)`. Click the unit to set the correct value.
+
+The app then uses that unit throughout, including the scale bar, grid and section thickness.
 
 ---
 
 ## Performance
 
-Measured on an M3 Pro at a 2400×1600 drawable, with the real pipeline:
+Measured on an M3 Pro at a 2400 × 1600 drawable using the production rendering pipeline:
 
-| Points | Frame   |
-| -----: | ------: |
-| 250K   | 0.87 ms |
-| 2.5M   | 11.1 ms |
-| 5M     | 23.2 ms |
-| 10M    | 44 ms   |
+| Points | Frame time |
+|---:|---:|
+| 250K | 0.87 ms |
+| 2.5M | 11.1 ms |
+| 5M | 23.2 ms |
+| 10M | 44 ms |
 
-Cost is linear in point count at **\~4.5 ns per point** and almost independent of
-point size — the limit is primitive rate, not fill rate or vertex bandwidth.
+Rendering cost scales approximately linearly at **~4.5 ns per point** and changes little with point size. The main constraint is primitive throughput rather than fill rate or vertex bandwidth.
 
-Two budgets follow from that. While the camera moves, **3M points** keeps a 60fps
-frame. Once it settles, the view refines to the whole cloud \*\*2M points per
-frame\*\* into a texture that persists between frames, so a 50M-point scene
-sharpens over about half a second.
+While the camera moves, the renderer targets about **3M points** to keep interaction responsive. Once the camera stops, it progressively refines to the full cloud in batches of roughly **2M points per frame**.
 
-Parsing runs at **71M points/second** for a 5M-point LAS and 36M/s at 20M, over
-a memory-mapped file, straight into the interleaved vertex array.
+LAS parsing reaches approximately **71M points/s** on a 5M-point file and **36M points/s** at 20M points, reading from a memory-mapped file directly into the interleaved vertex array.
 
-### Ceiling
+### Memory
 
-Roughly **49M points on an 18GB machine** — a quarter of physical memory,
-divided by the 48-byte vertex, divided again by two because every displayed
-point is resident twice: once in the working array and once in the Metal buffer.
-See [Known limitations][1].
+A practical ceiling is roughly **49M points on an 18GB Mac**.
+
+Each displayed point is currently held twice: once in the working CPU-side array and once in the Metal buffer. At 48 bytes per vertex, memory becomes the main constraint before rendering does.
 
 ---
 
 ## Tests
 
+Run the full suite with:
+
 ```bash
 ./Checks/run.sh
 ```
 
-Five suites, compiled against the real sources — never against a copy:
+The checks compile against the application sources rather than copies or fixtures.
 
-| Suite        | Covers                                                        |
-| ------------ | ------------------------------------------------------------- |
-| `grid`       | spacing stays legible across nine decades of zoom             |
-| `units`      | LAS coordinate-system parsing, GeoTIFF and WKT                |
-| `writers`    | every output format round-trips through the app's own parsers |
-| `refinement` | sliced rendering is pixel-identical to a single pass          |
-| `shaders`    | the real `Shaders.metal`, rendered offscreen                  |
+| Suite | Covers |
+|---|---|
+| `grid` | grid spacing across large zoom ranges |
+| `units` | LAS GeoTIFF and WKT unit parsing |
+| `writers` | export round trips through the app's parsers |
+| `refinement` | progressive rendering against a single-pass render |
+| `shaders` | the production `Shaders.metal`, rendered offscreen |
 
-They are standalone `main.swift` programs rather than an Xcode test target, so
-they run without the app bundle and can drive Metal directly.
-
----
-
-## Known limitations
-
-- **Every point is resident twice** — once in the working array, once in the
-  Metal buffer — which halves the practical ceiling. Dropping the working array
-  and reading from the shared buffer would roughly double it, but touches
-  selection, levelling and subsampling.
-- **No LAZ.** Compressed LAS needs `laszip`; only uncompressed `.las` is read.
-- **No LAS 1.4 extended point formats** (6–10) on write. Files are written as
-  LAS 1.2, point format 2.
-- **Coordinate systems are read but not written.** An exported LAS carries the
-  correct origin and scale but no CRS record, so its unit is undeclared.
-- **XYZ is written at millimetre precision** (three decimals). Fine for any
-  scanner this reads; not lossless.
-- **Two scans very far apart** lose precision when merged, because positions are
-  `Float` relative to a single shared origin.
+The suites are standalone Swift programs rather than an Xcode test target, allowing them to exercise Metal and renderer code directly.
 
 ---
 
-## Project layout
+## Limitations
 
-```
+- **No LAZ.** Convert compressed `.laz` files to `.las` first.
+- **LAS export uses LAS 1.2, point format 2.** Extended LAS 1.4 point formats are not currently written.
+- **Coordinate systems are read but not written.** Exported LAS files retain their origin and scale but do not currently include a CRS record.
+- **XYZ export uses three decimal places.**
+- **Very distant scans can lose precision when merged.** Files share one local `Float` coordinate space.
+- **Point data is held twice in memory.** This currently sets the practical ceiling for very large scenes.
+
+---
+
+## Structure
+
+```text
 PulsedPhotonsPro/
-  App/          entry point, menus, view model
+  App/          application entry point, menus, view model
   Models/       point cloud, units, visualisation modes
-  Parsers/      LAS, PLY, XYZ readers and the writer
+  Parsers/      LAS, PLY and XYZ readers, writers
   Rendering/    Metal renderer, camera, grid, shaders
   Views/        SwiftUI interface, theme, toolbar
-  Resources/    entitlements, asset catalogue
+  Resources/    assets and entitlements
+
 Checks/         headless test suites
-Samples/        small test clouds
+Samples/        small example point clouds
 run.sh          build and launch
 ```
 
-\~6,700 lines of Swift and Metal.
+The project contains roughly 6,700 lines of Swift and Metal.
+
+---
+
+## Background
+
+Pulsed Photons began as research code I developed during PhD in **Architectural Computation at the University of Edinburgh** in a thesis entitled  [*Ex-risk architecture: anticipating existential catastrophes through design*](https://era.ed.ac.uk/items/95ff0ab9-a324-45b6-ae39-4a4fb7239bea), where I used architecture to understand the spatial logic of extinction: how compound climate-related events reorganise human and more-than-human ecologies in a catastrophic manner. 
+
+Large-scale point-cloud datasets were central to that work. I wrote custom code to visualise measured environments volumetrically, often section and reorient them, and use them as architectural evidence in an autographic register. The software existed as research infrastructure for specific investigations. Pulsed Photons formalises that code into a standalone tool for reading, sectioning, aligning, and exporting large point clouds without first passing through a larger data modelling environment.
+
+I continued developing it at the **Institute for Design Informatics, University of Edinburgh**, where I introduced it to the **2024–25 MA/MSc Design Informatics cohort** as a field instrument, connecting terrestrial scanning, ecological observation and spatial interaction in a composite infrastructure.
+
+---
+
+## Acknowledgements
+
+Pulsed Photons is the result of a longer ecology of design research and pedagogical experiments at the University of Edinburgh carried between 2016-2022.
+
+At different stages, its development has been made possible through funding, institutional support, research programmes, equipment access and opportunities to test the work with students and researchers. This includes support associated with:
+
+- **Edinburgh Futures Institute**
+- **Data-Driven Innovation**
+- **Centre for Data, Culture & Society**
+- **Institute for Design Informatics**
+- **uCreate Makerspace**
 
 ---
 
 ## Contributing
 
-Issues and pull requests welcome. Before submitting:
+Issues and pull requests are welcome.
 
-1. `./Checks/run.sh` passes.
-2. Both configurations build: `xcodebuild -scheme PulsedPhotonsPro -configuration Release build`.
-3. New behaviour that could silently break has a check covering it.
+Before submitting a change:
 
-The codebase favours comments that explain *why* a decision was made, especially
-where the obvious approach was tried and measured and rejected. Please keep that.
+1. Run `./Checks/run.sh`.
+2. Confirm the Release configuration builds.
+3. Add a check for behaviour that could otherwise fail silently.
+
+Comments should explain **why** a non-obvious decision exists, particularly where a simpler approach was tested and rejected.
 
 ---
 
 ## License
 
-> MIT
+MIT
